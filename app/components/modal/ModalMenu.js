@@ -73,7 +73,7 @@ export default function ModalMenu({ open, handleClose }) {
                 const url = await handleImageUpload(file);
                 setImageUrl(url);
             } catch (error) {
-                setSnackbar({ open: true, message: 'Error uploading image. Please try again.', severity: 'error' });
+                setSnackbar({ open: true, messages: 'Error uploading image. Please try again.', severity: 'error' });
             }
         }
     };
