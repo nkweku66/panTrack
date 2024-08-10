@@ -13,7 +13,7 @@ export default function Card ({name, quantity, category, info, shelfLife }) {
                     <S.StyledTypography >NAME: { name } </S.StyledTypography>
                     <S.StyledTypography >INFO: { info } </S.StyledTypography>
                     <S.StyledTypography >CATEGORY: { category } </S.StyledTypography>
-                    <S.StyledTypography >SHELF-LIFE: { shelfLife } </S.StyledTypography>
+                    <S.StyledTypography >SHELF-LIFE: { shelfLife } days</S.StyledTypography>
                 </S.StyledStack>
             </Stack>
             <Stack

@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signInWithGoogle } from '/firebaseConfig';
+import { signInWithGoogle } from '../../firebaseConfig';
 import { Box, Stack } from '@mui/material';
 import pantryImage from '/public/images/pantryImage.jpg'
 import * as S from './page.styles'

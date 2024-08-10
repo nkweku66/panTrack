@@ -1,15 +1,15 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBXANTc_8lNO4n3d20VEwLHsZFzK9wCxkM",
-    authDomain: "friendlyeats-6e73c.firebaseapp.com",
-    projectId: "friendlyeats-6e73c",
-    storageBucket: "friendlyeats-6e73c.appspot.com",
-    messagingSenderId: "345695075061",
-    appId: "1:345695075061:web:c9cbe1ed286a34100363bc",
-    measurementId: "G-1QWDTNMN9M"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 let app;
@@ -22,13 +22,27 @@ if (typeof window !== "undefined" && !getApps().length) {
     auth = getAuth(app);
 }
 
-export const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
+export const signInWithGoogle = async () => {
+    if (!auth) {
+        throw new Error("Auth is not initialized");
+    }
+    try {
+        const provider = new GoogleAuthProvider();
+        return await signInWithPopup(auth, provider);
+    } catch (error) {
+        console.error("Error signing in with Google:", error);
+        throw error;
+    }
 };
 
-export const signOutUser = () => {
-    return signOut(auth);
-};
 
 export { db, auth };
+
+// Export a function to get Firebase auth instance
+export const getFirebaseAuth = () => {
+    if (!auth) {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+    }
+    return auth;
+};

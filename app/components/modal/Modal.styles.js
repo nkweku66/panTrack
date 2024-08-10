@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Button, FormControl, Modal, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, Modal, TextField, Typography } from '@mui/material'
 
 const StyledModal = styled(Modal)`
     position: absolute;
@@ -15,7 +15,7 @@ const StyledModal = styled(Modal)`
     font-family: 'Bicyclette'
 `
 
-const StyledForm = styled(FormControl)`
+const StyledBox = styled(Box)`
     position: relative;
     color: #647171;
     font-family: 'Bicyclette' !important;
@@ -66,7 +66,7 @@ const StyledTypography = styled(Typography)`
 
 export { 
     StyledModal, 
-    StyledForm, 
+    StyledBox, 
     TextInput, 
     StyledButton,
     StyledTypography
