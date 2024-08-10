@@ -6,6 +6,6 @@ export default function Recipie () {
             variant='h1' 
             fontSize={50}
             textAlign="center"
-        >Try this Out</Typography>
+        >WORKING ON</Typography>
     )
 }

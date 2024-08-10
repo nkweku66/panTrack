@@ -4,11 +4,21 @@ import { Typography, Stack } from '@mui/material'
 import Carrot from '/public/images/carrot.jpg'
 
 
-export default function Card ({name, quantity, category, info, shelfLife }) {
+export default function Card ({name, quantity, category, info, shelfLife, uploadImage }) {
     return (
         <S.Card direction='row'>
             <Stack direction="row" spacing={2}>
-                <S.StyledImage alt='item image' src={Carrot} priority/>
+                <S.StyledImage 
+                    alt='item image' 
+                    src={uploadImage || '/images/carrot.jpg'} 
+                    width={100} 
+                    height={100} 
+                    priority
+                    onError={(e) => {
+                        e.target.onerror = null; 
+                        e.target.src = '/images/carrot.jpg';
+                    }}
+                />
                 <S.StyledStack>
                     <S.StyledTypography >NAME: { name } </S.StyledTypography>
                     <S.StyledTypography >INFO: { info } </S.StyledTypography>

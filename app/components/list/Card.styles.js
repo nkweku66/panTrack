@@ -63,9 +63,9 @@ const StyledDelete = styled(Delete)`
 `
 
 const StyledImage = styled(Image)`
-    width: 50%;
+    width: 200px;
     height: 150px;
-    objectFit: cover;
+    object-fit: cover;
     border-radius: 10px 0 0 10px;
 ` 
 const StyledTypography = styled(Typography)`

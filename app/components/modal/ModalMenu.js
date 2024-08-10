@@ -16,33 +16,65 @@ export default function ModalMenu({ open, handleClose }) {
         info,
         onChangeInfo,
         handleAddPantryItem,
-        setImageFile
+        setImageFile,
+        handleImageUpload
     } = useContext(MyContext);
 
-    const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+    const [imageUrl, setImageUrl] = useState('');
 
     const maxChars = 200;
+
+    const resetForm = () => {
+        onChangeName({ target: { value: '' } });
+        onChangeCategory({ target: { value: '' } });
+        onChangeQuantity({ target: { value: 0 } });
+        onChangeShelfLife({ target: { value: 0 } });
+        onChangeInfo({ target: { value: '' } });
+        setImageUrl('');
+        setImageFile(null);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Submit started');
+
+        if (!name || !category || !quantity || !shelfLife) {
+            setSnackbar({ open: true, message: 'Please fill all required fields.', severity: 'error' });
+            return;
+        }
+
         try {
             console.log('Calling handleAddPantryItem');
-            await handleAddPantryItem();
+            const itemData = {
+                name,
+                category,
+                quantity,
+                shelfLife,
+                info,
+                uploadImage: imageUrl
+            };
+            await handleAddPantryItem(itemData);
             console.log('handleAddPantryItem completed');
-            setSnackbar({ open: true, message: 'Item added successfully!' });
-            console.log('Calling handleClose');
+            setSnackbar({ open: true, message: 'Item added successfully!', severity: 'success' });
+            resetForm();
             handleClose();
-            console.log('handleClose called');
         } catch (error) {
             console.log('Error caught:', error);
-            setSnackbar({ open: true, message: 'Error adding item. Please try again.' });
+            setSnackbar({ open: true, message: 'Error adding item. Please try again.', severity: 'error' });
         }
     };
-
-    const handleImageChange = (e) => {
-        if (e.target.files[0]) {
-            setImageFile(e.target.files[0]);
+    
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            try {
+                const url = await handleImageUpload(file);
+                setImageUrl(url);
+            } catch (error) {
+                setSnackbar({ open: true, message: 'Error uploading image. Please try again.', severity: 'error' });
+            }
         }
     };
 
@@ -120,12 +152,12 @@ export default function ModalMenu({ open, handleClose }) {
                                 required
                             />
                             <S.TextInput 
-                                id="modal-modal-upload-image" 
-                                label="Upload Image" 
-                                variant="outlined"
+                                id="modal-modal-image" 
                                 type="file"
+                                inputProps={{
+                                    accept: "image/*"
+                                }}
                                 onChange={handleImageChange}
-                                InputLabelProps={{ shrink: true }}
                             />
                         </Stack>
                         <S.TextInput 

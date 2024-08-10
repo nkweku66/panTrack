@@ -55,6 +55,7 @@ function PantryItemsList({ items }) {
             category={item.category}
             info={item.info}
             shelfLife={item.shelfLife}
+            uploadImage={item.uploadImage}
           />
         ))
       ) : (
@@ -138,7 +139,6 @@ export default function Home() {
     return () => unsubscribe();
   }, [router, fetchPantryItems]);
 
-
   const handleImageUpload = async (file) => {
     try {
       const url = await uploadImage(file);
@@ -146,20 +146,24 @@ export default function Home() {
         ...prevItem,
         uploadImage: url
       }));
+      return url;
     } catch (error) {
       setError('Error uploading image. Please try again.');
       console.error('Error uploading image:', error);
+      throw error;
     }
   };
-
-  const handleAddPantryItem = async () => {
+  
+  const handleAddPantryItem = async (itemData) => {
     if (user) {
       try {
+        setLoading(true);
+        let imageUrl = itemData.uploadImage || '';
         if (imageFile) {
-          await handleImageUpload(imageFile);
+          imageUrl = await uploadImage(imageFile);
         }
-        
-        await addPantryItem(user.uid, newItem);
+        const newItemWithImage = { ...itemData, uploadImage: imageUrl };
+        await addPantryItem(user.uid, newItemWithImage);
 
         setImageFile(null);
         setNewItem({
@@ -171,18 +175,23 @@ export default function Home() {
           uploadImage: ''
         });
         await fetchPantryItems();
+        setLoading(false);
       } catch (error) {
         setError('Error adding pantry item. Please try again.');
         console.error('Error adding pantry item:', error);
+        setLoading(false);
+        throw error;
       }
     }
   };
+  
+
 
   useEffect(() => {
     console.log('PantryItemsList re-rendered with items:', pantryItems);
   }, [pantryItems]);
   
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewItem(prevItem => ({
@@ -216,16 +225,16 @@ export default function Home() {
       <MyContext.Provider
         value={{
           ...newItem,
-          onChangeName: (e) => handleInputChange({ target: { name: 'name', value: e.target.value } }),
-          onChangeCategory: (e) => handleInputChange({ target: { name: 'category', value: e.target.value } }),
-          onChangeQuantity: (e) => handleInputChange({ target: { name: 'quantity', value: e.target.value } }),
-          onChangeShelfLife: (e) => handleInputChange({ target: { name: 'shelfLife', value: e.target.value } }),
-          onChangeInfo: (e) => handleInputChange({ target: { name: 'info', value: e.target.value } }),
+          onChangeName: (e) => setNewItem(prev => ({ ...prev, name: e.target.value })),
+          onChangeCategory: (e) => setNewItem(prev => ({ ...prev, category: e.target.value })),
+          onChangeQuantity: (e) => setNewItem(prev => ({ ...prev, quantity: parseInt(e.target.value) || 0 })),
+          onChangeShelfLife: (e) => setNewItem(prev => ({ ...prev, shelfLife: parseInt(e.target.value) || 0 })),
+          onChangeInfo: (e) => setNewItem(prev => ({ ...prev, info: e.target.value })),
           handleAddPantryItem,
           setImageFile,
-          pantryItems,
-          handleSearch,
+          handleImageUpload,
           items,
+          uploadImage,
           setItems
         }}
       >
