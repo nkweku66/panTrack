@@ -6,6 +6,7 @@ import Card from "./components/list/Card";
 import Lottie from "lottie-react";
 import Settings from '/public/settings.json'
 import Loading from  '/public/loading.json'
+import AddAnimation from '/public/AddAnimation.json'
 import Category from "./components/category/Category";
 import Recipie from "./components/recipie/Recipie";
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
@@ -16,7 +17,10 @@ import {
   addPantryItem, 
   getPantryItems, 
   createUserDocument, 
-  searchPantryItems
+  searchPantryItems,
+  increaseItem,
+  decreaseItem,
+  deleteItem
 } from '../lib/db'
 import { useRouter } from "next/navigation";
 import { uploadImage } from '../lib/imageUpload'
@@ -26,7 +30,7 @@ export const MyContext = createContext(null);
 
 export const useMyContext = () => useContext(MyContext);
 
-function PantryItemsList({ items }) {
+function PantryItemsList({ items, onIncrease, onDecrease, onDelete }) {
   return (
     <Stack
       height="55vh"
@@ -56,10 +60,28 @@ function PantryItemsList({ items }) {
             info={item.info}
             shelfLife={item.shelfLife}
             uploadImage={item.uploadImage}
+            onIncrease={() => onIncrease(item.id)}
+            onDecrease={() => onDecrease(item.id)}
+            onDelete={() => onDelete(item.id)}
           />
         ))
       ) : (
-        <Typography>No items to display</Typography>
+        <Box
+          position="absolute"
+          top="70%"
+          left="70%"
+          sx = {{
+            transform: "translate(-50%, -50%)",
+            color: '#647171',
+            fontSize: '20px',
+            fontWeight: 'bold'
+          }}
+        >
+          <Stack alignItems="center" justifyContent="center" spacing={2} >
+            <Lottie animationData={AddAnimation} loop={true} style={{ width: 100, height: 100 }}/>
+            <Typography fontFamily="inherit" fontSize="2rem" color="#647171">Added items will show here</Typography>
+          </Stack>
+        </Box>
       )}
     </Stack>
   );
@@ -184,6 +206,36 @@ export default function Home() {
       }
     }
   };
+
+
+    const handleIncrease = async (id) => {
+      try {
+          await increaseItem(user.uid, id);
+          await fetchPantryItems();
+      } catch (error) {
+          setError('Error increasing item quantity. Please try again.');
+      }
+  };
+
+
+    const handleDecrease = async (id) => {
+      try {
+          await decreaseItem(user.uid, id);
+          await fetchPantryItems();
+      } catch (error) {
+          setError('Error decreasing item quantity. Please try again.');
+      }
+  };
+  
+
+  const handleDelete = async (id) => {
+    try {
+        await deleteItem(user.uid, id);
+        await fetchPantryItems();
+    } catch (error) {
+        setError('Error deleting item. Please try again.');
+    }
+  };
   
 
 
@@ -235,11 +287,11 @@ export default function Home() {
           handleImageUpload,
           items,
           uploadImage,
+          handleSearch,
           setItems
         }}
       >
         <Search />
-      </MyContext.Provider>
       {error && <Typography color="error">{error}</Typography>}
       <Box marginTop={2} display="grid" gridTemplateColumns="1fr 2fr" gap={5}>
         <Box>
@@ -254,9 +306,15 @@ export default function Home() {
           <Box borderBottom="2px solid #647171" borderRadius='0 3px 0 3px' padding={2}>
             <Category />
           </Box>
-          <PantryItemsList items={items} />
+          <PantryItemsList 
+            items={items}
+            onIncrease={handleIncrease}
+            onDecrease={handleDecrease}
+            onDelete={handleDelete}
+          />
         </Box>
       </Box>
+    </MyContext.Provider>
     </Box>
   );
 }

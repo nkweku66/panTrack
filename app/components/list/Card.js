@@ -4,7 +4,17 @@ import { Typography, Stack } from '@mui/material'
 import Carrot from '/public/images/carrot.jpg'
 
 
-export default function Card ({name, quantity, category, info, shelfLife, uploadImage }) {
+export default function Card ({
+    name, 
+    quantity, 
+    category, 
+    info, 
+    shelfLife, 
+    uploadImage,
+    onIncrease, 
+    onDecrease, 
+    onDelete
+}) {
     return (
         <S.Card direction='row'>
             <Stack direction="row" spacing={2}>
@@ -43,9 +53,9 @@ export default function Card ({name, quantity, category, info, shelfLife, upload
                     spacing={1}
                     paddingBottom={2}
                 >
-                    <S.StyledAdd />
-                    <S.StyledRemove />
-                    <S.StyledDelete />
+                    <S.StyledAdd onClick={onIncrease}/>
+                    <S.StyledRemove onClick={onDecrease}/>
+                    <S.StyledDelete onClick={onDelete}/>
                 </Stack>
             </Stack>
         </S.Card>

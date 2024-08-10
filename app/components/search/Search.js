@@ -11,7 +11,7 @@ export default function SearchBar() {
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [cameraOpen, setCameraOpen] = useState(false);
-    const { pantryItems, handleSearch, setItems } = useContext(MyContext);
+    const { items, handleSearch, setItems } = useContext(MyContext);
 
 
     const handleOpen = () => setOpen(true);
@@ -49,7 +49,7 @@ export default function SearchBar() {
             <S.SearchArea>
                 <Stack direction="row" spacing={4} alignItems="center">
                     <S.Text>ITEMS</S.Text>
-                    <S.StyledChip label={`${pantryItems?.length || 0} Items in total`} />
+                    <S.StyledChip label={`${items?.length || 0} Items in total`} />
                 </Stack>
                 <S.SearchInput 
                     placeholder='Search for an item...'
