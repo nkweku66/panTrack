@@ -56,6 +56,7 @@ export default function ModalMenu({ open, handleClose }) {
         { value: "Frozen", label: "Frozen" },
         { value: "Bakery", label: "Bakery" },
         { value: "Beverages", label: "Beverages" },
+        { value: "Others", label: "Others" },
     ];
 
     return (
