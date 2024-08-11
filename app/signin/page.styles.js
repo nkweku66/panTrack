@@ -13,6 +13,7 @@ const StyledButton = styled(Button)`
     background-color: #39db7d;
     color: #fff;
     padding: 10px 20px;
+    font-weight: bold;
     border-radius: 10px;
     transition: background-color 0.2s ease-in-out;
     font-family: inherit;
